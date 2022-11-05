@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:garbage_collector/features/camera_preview_widget.dart';
+import 'package:garbage_collector/features/canvas/camera_preview_widget.dart';
 import 'package:get/get.dart';
 
 import 'controller.dart';
