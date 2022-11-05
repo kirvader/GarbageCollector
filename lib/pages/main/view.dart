@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/features/buttons/image_load_method_choice_button.dart';
 import 'package:get/get.dart';
 
 import 'controller.dart';
@@ -6,36 +7,46 @@ import 'controller.dart';
 class MainPageView extends GetView<MainPageController> {
   const MainPageView({super.key});
 
+  void onCategoriesButtonPressed() {
+
+  }
+
+  void onTakePhotoButtonPressed() {}
+
   @override
   Widget build(BuildContext context) {
-    return Container();
-    // return GetRouterOutlet.builder(
-    //   routerDelegate: Get.rootDelegate,
-    //   builder: (context, delegate, currentRoute) {
-    //     return controller.obx((state) {
-    //       return Scaffold(
-    //           body: GetRouterOutlet(
-    //               initialRoute: Routes.PROFILE, delegate: delegate),
-    //           bottomNavigationBar: BottomBarButtons(
-    //               onTapOnBottomBar: (value) {
-    //                 controller.updateTabIndex(value);
-    //                 switch (value) {
-    //                   case 0:
-    //                     delegate.toNamed(Routes.VOTE,
-    //                         arguments: state?.data.nextQuestion);
-    //                     break;
-    //                   case 1:
-    //                     delegate.toNamed(Routes.PROFILE);
-    //                     break;
-    //                   default:
-    //                 }
-    //               },
-    //               currentIndex: state?.pageIndex ?? DEFAULT_OPENED_PAGE_INDEX));
-    //     },
-    //         onLoading: Container(
-    //             color: BACKGROUND,
-    //             child: const SpinKitDoubleBounce(color: Colors.blue)));
-    //   },
-    // );
+    return Scaffold(
+      body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                  child: ImageLoadMethodChoiceButton(
+                    onPressed: onCategoriesButtonPressed,
+                      child: const Text("Browse categories manually",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold
+                        ),
+                      )
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                  child: ImageLoadMethodChoiceButton(
+                      onPressed: onTakePhotoButtonPressed,
+                      child: const Text("Take photo",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold
+                        ),
+                      )
+                  ),
+                )
+              ],
+          )
+      ),
+    );
   }
 }
