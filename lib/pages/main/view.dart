@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/features/buttons/image_load_method_choice_button.dart';
+import 'package:garbage_collector/navigation/routes.dart';
 import 'package:get/get.dart';
 
 import 'controller.dart';
@@ -8,10 +9,12 @@ class MainPageView extends GetView<MainPageController> {
   const MainPageView({super.key});
 
   void onCategoriesButtonPressed() {
-
+    Get.toNamed(Paths.categories);
   }
 
-  void onTakePhotoButtonPressed() {}
+  void onTakePhotoButtonPressed() {
+    Get.toNamed(Paths.camera);
+  }
 
   @override
   Widget build(BuildContext context) {
