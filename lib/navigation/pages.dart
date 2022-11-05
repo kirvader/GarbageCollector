@@ -33,7 +33,14 @@ class AppPages {
                     name: Paths.info,
                     page: () => InfoPageView(),
                     binding: InfoPageBinding(),
-                    transition: Transition.upToDown)
+                    transition: Transition.upToDown,
+                    children: [
+                      GetPage(
+                          name: Paths.map,
+                          page: () => MapPageView(),
+                          binding: MapPageBinding(),
+                          transition: Transition.noTransition)
+                    ])
               ]),
           GetPage(
               name: Paths.objects,
@@ -45,7 +52,14 @@ class AppPages {
                     name: Paths.info,
                     page: () => InfoPageView(),
                     binding: InfoPageBinding(),
-                    transition: Transition.upToDown)
+                    transition: Transition.upToDown,
+                    children: [
+                      GetPage(
+                          name: Paths.map,
+                          page: () => MapPageView(),
+                          binding: MapPageBinding(),
+                          transition: Transition.noTransition)
+                    ])
               ]),
           GetPage(
               name: Paths.categories,
@@ -57,7 +71,14 @@ class AppPages {
                     name: Paths.info,
                     page: () => InfoPageView(),
                     binding: InfoPageBinding(),
-                    transition: Transition.upToDown)
+                    transition: Transition.upToDown,
+                    children: [
+                      GetPage(
+                          name: Paths.map,
+                          page: () => MapPageView(),
+                          binding: MapPageBinding(),
+                          transition: Transition.noTransition)
+                    ])
               ]),
           GetPage(
               name: Paths.map,
