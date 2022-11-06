@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:garbage_collector/navigation/routes.dart';
+import 'package:garbage_collector/pages/info/view.dart';
 import 'package:get/get.dart';
 
 import 'controller.dart';
@@ -60,7 +63,7 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
 
             return GestureDetector(
               onTap: () {
-                onTap(categoryName.toLowerCase());
+                onTap(categoryName.toLowerCase(), context );
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -89,9 +92,46 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
     );
   }
 
-  void onTap(String categoryName) {
-    Get.toNamed(Routes.info, arguments: {
-      "categoryName": categoryName,
+  Future<void> onTap(String categoryName, BuildContext context) async {
+    var header = categoryName;
+
+    var listsOfTags = <List<String>>[];
+    var objectsDescriptions =
+        await loadJSON("assets/objects.json", context);
+    objectsDescriptions.forEach((String key, dynamic value) {
+      List<String> valueTags = List<String>.from(value['tags']);
+      if (value['category'] == categoryName) {
+        listsOfTags.add(valueTags);
+      }
     });
+    print("Lists of tags: $listsOfTags");
+    late List<String> tags;
+    if (listsOfTags.isEmpty) {
+      tags = [];
+    }
+    else {
+      var commonElements = listsOfTags.fold<Set<String>>(
+          listsOfTags.isNotEmpty ? listsOfTags.first.toSet() : Set(), (a, b) => a.union(b.toSet()));
+      tags = commonElements.toList();
+    }
+
+    print({
+      "categoryName": categoryName,
+      "header": header,
+      "tags": tags
+    });
+
+    Get.to(() => const InfoPageView(), arguments: {
+      "categoryName": categoryName,
+      "header": header,
+      "tags": tags
+    });
+  }
+
+
+  dynamic loadJSON(String jsonPath, BuildContext context) async {
+    String data = await DefaultAssetBundle.of(context).loadString(jsonPath);
+    final jsonResult = jsonDecode(data);
+    return jsonResult;
   }
 }

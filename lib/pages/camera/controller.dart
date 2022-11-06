@@ -15,8 +15,6 @@ class CameraPageController extends GetxController with StateMixin<CameraPageStat
   }
 
   void updateInfo(List<Recognition> recognitions) {
-    print(recognitions);
-
     Map<int, Recognition> mapping = {};
     for (var recognition in recognitions) {
       var clsId = recognition.id;
