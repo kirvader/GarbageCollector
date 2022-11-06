@@ -9,31 +9,37 @@ import 'state.dart';
 class MapPageController extends GetxController with StateMixin<MapPageState> {
   final currentLocation = Location().getLocation().obs;
 
-  var tag;
+  var tags;
 
   MapPageController() {
     if (Get.arguments != null) {
-      tag = Get.arguments.toString();
+      tags = Get.arguments.toString();
     }
   }
 
   Future<List<Node>> getRecyclePoints({double range = 0.1 }) async {
     var center = (await currentLocation.value);
-    var param = '"amenity"="recycling"';
-    if(tag != null) {
-      param = '"$tag"="yes"';
+    var param = ['"amenity"="recycling"'];
+    if(tags != null) {
+      param = List<String>.of(tags.map((tag) => '"$tag"="yes"'));
     }
+    final coordBounds = '${center.latitude! - range},${center.longitude! - range},${center.latitude! + range},${center.longitude! + range}';
+    var requestBody =
+    '''data=[out:json][timeout:25];
+    (''';
+    for(var p in param) {
+      requestBody +=
+      '''node[$p]($coordBounds);
+      way[$p]($coordBounds);''';
+    }
+    requestBody +=
+    ''');
+    out center;''';
     final response = await http.post(Uri.parse('https://overpass-api.de/api/interpreter'),
         headers: <String, String>{
           'Content-Type': 'text/plain;charset=UTF-8',
         },
-        body:
-        '''data=[out:json][timeout:25];
-        (
-          node[$param](${center.latitude! - range},${center.longitude! - range},${center.latitude! + range},${center.longitude! + range});
-          way[$param](${center.latitude! - range},${center.longitude! - range},${center.latitude! + range},${center.longitude! + range});
-        );
-        out center;''');
+        body: requestBody);
     if (response.statusCode == 200) {
       Iterable l = json.decode(response.body)['elements'];
       return List<Node>.from(l.map((model)=> Node.fromJson(model)));
