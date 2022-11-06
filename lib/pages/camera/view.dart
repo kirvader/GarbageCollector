@@ -13,13 +13,21 @@ class CameraPageView extends GetView<CameraPageController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: availableCameras(),
-        builder: (BuildContext context, AsyncSnapshot<List<CameraDescription>> snapshot) {
-          if (!snapshot.hasData || snapshot.hasError) {
-            return const Text("Loading maybe");
+          future: availableCameras(),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<CameraDescription>> snapshot) {
+            if (!snapshot.hasData || snapshot.hasError) {
+              return const Text("Loading maybe");
+            }
+            return Obx(() {
+              return Column(
+                  children: [
+                    Text(controller.info.value),
+                    CameraView(resultsCallback: controller.updateInfo)
+                  ]
+              );
+            });
           }
-          return CameraWidget(availableCameras: snapshot.data!);
-        }
       ),
     );
   }

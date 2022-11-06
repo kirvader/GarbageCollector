@@ -1,8 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/services.dart';
 import 'package:garbage_collector/features/utils/recognition_result.dart';
 import 'package:garbage_collector/features/utils/stats.dart';
 import 'package:image/image.dart' as imageLib;
@@ -13,10 +12,10 @@ class Classifier {
   static const MAX_AMOUNT_OF_RESULTS = 10;
   static const THRESHOLD = 0.3;
   /// Instance of Interpreter
-  late Interpreter _interpreter;
+  Interpreter? _interpreter;
 
   /// Labels file loaded as List
-  late List<String> _labels;
+  List<String>? _labels;
 
   static const String MODEL_FILE_NAME = "detect.tflite";
   static const String LABEL_FILE_NAME = "labelmap.txt";
@@ -28,8 +27,8 @@ class Classifier {
   late List<TfLiteType> _outputTypes;
 
   Classifier(
-    Interpreter interpreter,
-    List<String> labels,
+  {Interpreter? interpreter,
+    List<String>? labels}
   ) {
     loadModel(interpreter: interpreter);
     loadLabels(labels: labels);
@@ -44,7 +43,7 @@ class Classifier {
             options: InterpreterOptions()..threads = 4,
           );
 
-      var outputTensors = _interpreter.getOutputTensors();
+      var outputTensors = _interpreter!.getOutputTensors();
       _outputShapes = [];
       _outputTypes = [];
       outputTensors.forEach((tensor) {
@@ -56,15 +55,20 @@ class Classifier {
     }
   }
 
+  Future<String> loadAsset() async {
+    return await rootBundle.loadString('assets/$LABEL_FILE_NAME');
+  }
+
   /// Loads labels from assets
   void loadLabels({List<String>? labels}) async {
     try {
       if (labels == null) {
-        File("assets/$LABEL_FILE_NAME")
-            .openRead()
-            .transform(utf8.decoder)
-            .transform(const LineSplitter())
-            .forEach((l) => _labels.add(l));
+        _labels = [];
+        var whole_string = await loadAsset();
+        for (var elem in whole_string.split('\n')) {
+          _labels!.add(elem);
+        }
+
       } else {
         _labels = labels;
       }
@@ -74,10 +78,10 @@ class Classifier {
   }
 
   /// Gets the interpreter instance
-  Interpreter get interpreter => _interpreter;
+  Interpreter? get interpreter => _interpreter;
 
   /// Gets the loaded labels
-  List<String> get labels => _labels;
+  List<String>? get labels => _labels;
 
   /// Input size of image (height = width = 300)
   static const int INPUT_SIZE = 300;
@@ -145,7 +149,7 @@ class Classifier {
     var inferenceTimeStart = DateTime.now().millisecondsSinceEpoch;
 
     // run inference
-    _interpreter.runForMultipleInputs(inputs, outputs);
+    _interpreter!.runForMultipleInputs(inputs, outputs);
 
     var inferenceTimeElapsed =
         DateTime.now().millisecondsSinceEpoch - inferenceTimeStart;
@@ -175,7 +179,7 @@ class Classifier {
 
       // Label string
       var labelIndex = outputClasses.getIntValue(i) + labelOffset;
-      var label = _labels.elementAt(labelIndex);
+      var label = _labels!.elementAt(labelIndex);
 
       if (score > THRESHOLD) {
         // inverse of rect
