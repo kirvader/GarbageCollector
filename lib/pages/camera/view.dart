@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/features/canvas/bounding_boxes.dart';
 import 'package:garbage_collector/features/canvas/camera_preview_widget.dart';
+import 'package:garbage_collector/pages/info/view.dart';
 import 'package:get/get.dart';
 
 import 'controller.dart';
@@ -24,7 +25,10 @@ class CameraPageView extends GetView<CameraPageController> {
               return Stack(
                   children: [
                     CameraView(resultsCallback: controller.updateInfo, sizeChangedCallback: controller.updateSize),
-                    BoundingBoxesView(boxes: controller.recognitions.value, cameraSize: controller.cameraSize.value,),
+                    BoundingBoxesView(boxes: controller.recognitions.value, cameraSize: controller.cameraSize.value, navigateToInfo: (args) {
+                      print(args);
+                      Get.to(() => const InfoPageView(), arguments: args);
+                    }),
                   ]
               );
             });

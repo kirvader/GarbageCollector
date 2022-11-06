@@ -17,6 +17,10 @@ class MainPageView extends GetView<MainPageController> {
     Get.toNamed(Paths.camera);
   }
 
+  void onAddNewPointPressed() {
+    Get.toNamed(Paths.nodeAddMap);
+  }
+
   @override
   Widget build(BuildContext context) {
     WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +49,19 @@ class MainPageView extends GetView<MainPageController> {
                   child: ImageLoadMethodChoiceButton(
                       onPressed: onTakePhotoButtonPressed,
                       child: const Text("Take photo",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold
+                        ),
+                      )
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                  child: ImageLoadMethodChoiceButton(
+                    height: 50,
+                      onPressed: onAddNewPointPressed,
+                      child: const Text("Add new receiving point",
                         style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold

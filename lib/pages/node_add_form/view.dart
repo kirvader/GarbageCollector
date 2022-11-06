@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
@@ -53,9 +54,39 @@ class NodeAddFormPageView extends GetView<NodeAddFormPageController> {
                         ])
                       ],
                     )),
-                Column(children: [
-
-                ])
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                          labelText: 'Tags'
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                            labelText: 'Description'
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          Fluttertoast.showToast(
+                              msg: "Form was submitted!",  // message
+                              toastLength: Toast.LENGTH_SHORT, // length
+                              gravity: ToastGravity.BOTTOM,    // location
+                            timeInSecForIosWeb: 1
+                          );
+                        },
+                        child: Text("Submit"))
+                  ]),
+                )
               ],
             ),
           )

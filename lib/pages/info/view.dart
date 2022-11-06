@@ -12,7 +12,7 @@ class InfoPageView extends GetView<InfoPageController> {
   @override
   Widget build(BuildContext context) {
     var arguments = Get.arguments as Map<String, dynamic>;
-    var tags = arguments["tags"] as List<String>;
+    var tags = List<String>.from(arguments["tags"]);
     var header = arguments["header"] as String;
     var category = arguments["categoryName"] as String;
 
