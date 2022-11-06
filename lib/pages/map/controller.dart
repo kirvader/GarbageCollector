@@ -9,11 +9,11 @@ import 'state.dart';
 class MapPageController extends GetxController with StateMixin<MapPageState> {
   final currentLocation = Location().getLocation().obs;
 
-  var tags;
+  List<String>? tags;
 
   MapPageController() {
     if (Get.arguments != null) {
-      tags = Get.arguments.toString();
+      tags = Get.arguments as List<String>;
     }
   }
 
@@ -21,7 +21,7 @@ class MapPageController extends GetxController with StateMixin<MapPageState> {
     var center = (await currentLocation.value);
     var param = ['"amenity"="recycling"'];
     if(tags != null) {
-      param = List<String>.of(tags.map((tag) => '"$tag"="yes"'));
+      param = List<String>.of(tags!.map((tag) => '"$tag"="yes"'));
     }
     final coordBounds = '${center.latitude! - range},${center.longitude! - range},${center.latitude! + range},${center.longitude! + range}';
     var requestBody =
