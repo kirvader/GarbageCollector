@@ -26,6 +26,7 @@ class MapPageView extends GetView<MapPageController> {
           }
         });
     return Scaffold(
+      appBar: AppBar(title: const Text('Closest Recycle Points')),
       body: Column(
         children: [
           Flexible(

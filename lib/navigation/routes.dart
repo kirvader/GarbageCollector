@@ -7,6 +7,7 @@ abstract class Routes {
   static const map = Paths.map;
   static const info = Paths.info;
   static const nodeAddMap = Paths.nodeAddMap;
+  static const nodeAddForm = Paths.nodeAddForm;
 }
 
 abstract class Paths {
@@ -18,4 +19,5 @@ abstract class Paths {
   static const settings = '/settings';
   static const map = '/map';
   static const nodeAddMap = '/nodeAppMap';
+  static const nodeAddForm = '/nodeAppForm';
 }

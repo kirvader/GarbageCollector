@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 
 import 'controller.dart';
 import 'package:garbage_collector/navigation/routes.dart';
@@ -16,6 +17,7 @@ class NodeAddMapPageView extends GetView<NodeAddMapPageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Choose Location')),
       body: Column(
         children: [
           Flexible(
@@ -32,7 +34,8 @@ class NodeAddMapPageView extends GetView<NodeAddMapPageController> {
                             interactiveFlags: InteractiveFlag.pinchZoom |
                                 InteractiveFlag.drag,
                             zoom: _MAP_ZOOM,
-                            maxZoom: 18),
+                            maxZoom: 18,
+                            onTap: _handleTap),
                         children: [
                           TileLayer(
                             urlTemplate:
@@ -43,23 +46,16 @@ class NodeAddMapPageView extends GetView<NodeAddMapPageController> {
                           ),
                           MarkerLayer(markers: [
                             Marker(
-                              width: _MARKER_SIZE,
-                              height: _MARKER_SIZE,
-                              point: LatLng(snapshot.data!.latitude!,
-                                  snapshot.data!.longitude!),
-                              builder: (ctx) => GestureDetector(
-                                  onTap: () {
-                                    Get.toNamed(Paths.nodeAddForm,
-                                        arguments: LatLng(
-                                            snapshot.data!.latitude!,
-                                            snapshot.data!.longitude!));
-                                  },
-                                  child: Container(
-                                    key: const Key('red'),
-                                    child: const Icon(Icons.my_location_sharp,
-                                        color: Colors.blue, size: _MARKER_SIZE),
-                                  )),
-                            )
+                                width: _MARKER_SIZE,
+                                height: _MARKER_SIZE,
+                                point: LatLng(snapshot.data!.latitude!,
+                                    snapshot.data!.longitude!),
+                                builder: (ctx) => Container(
+                                      key: const Key('red'),
+                                      child: const Icon(Icons.my_location_sharp,
+                                          color: Colors.blue,
+                                          size: _MARKER_SIZE),
+                                    )),
                           ])
                         ],
                       );
@@ -72,5 +68,8 @@ class NodeAddMapPageView extends GetView<NodeAddMapPageController> {
         ],
       ),
     );
+  }
+  void _handleTap(TapPosition tapPosition, LatLng latlng) {
+    Get.toNamed(Routes.nodeAddForm, arguments: latlng);
   }
 }

@@ -14,6 +14,8 @@ import 'package:garbage_collector/pages/settings/binding.dart';
 import 'package:garbage_collector/pages/settings/view.dart';
 import 'package:get/get.dart';
 
+import '../pages/node_add_form/view.dart';
+import '../pages/node_add_form/binding.dart';
 import '../pages/node_add_map/binding.dart';
 import '../pages/node_add_map/view.dart';
 import 'routes.dart';
@@ -59,6 +61,11 @@ class AppPages {
               name: Paths.nodeAddMap,
               page: () => NodeAddMapPageView(),
               binding: NodeAddMapPageBinding(),
+              transition: Transition.noTransition),
+          GetPage(
+              name: Paths.nodeAddForm,
+              page: () => NodeAddFormPageView(),
+              binding: NodeAddFormPageBinding(),
               transition: Transition.noTransition),
           GetPage(
             name: Paths.settings,
