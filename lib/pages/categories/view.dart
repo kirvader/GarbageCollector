@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:garbage_collector/navigation/routes.dart';
 import 'package:garbage_collector/pages/info/view.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +12,6 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
 
   @override
   Widget build(BuildContext context) {
-    const title = 'Categories';
     const categories = [
       'hazardous waste',
       'plastic',
@@ -47,9 +45,7 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
       Colors.grey,
     ];
 
-    return MaterialApp(
-      title: title,
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(title: const Text('Categories'),
             leading: BackButton(
             color: Colors.white
@@ -90,8 +86,7 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
             );
           }),
         ),
-      ),
-    );
+      );
   }
 
   Future<void> onTap(String categoryName, BuildContext context) async {
