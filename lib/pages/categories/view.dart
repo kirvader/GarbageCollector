@@ -14,18 +14,18 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
     const categories = [
       'hazardous waste',
       'plastic',
-      'organic waste',
+      'fat',
+      'fabric/shoes',
       'glass',
       'carton',
       'paper',
       'metal',
-      'fabric/shoes',
-      'residual waste',
+      'polystyrene',
       'electronic',
       'ee-waste',
       'bulky waste',
-      'polystyrene',
-      'fat'
+      'organic waste',
+      'residual waste',
     ];
     const colors = [
       Colors.blue,
@@ -36,12 +36,12 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
       Colors.cyan,
       Colors.orange,
       Colors.brown,
-      Colors.grey,
+      Colors.lime,
       Colors.pink,
       Colors.purple,
       Colors.teal,
-      Colors.lime,
       Colors.amber,
+      Colors.grey,
     ];
 
     return MaterialApp(
@@ -59,7 +59,9 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
                 .replaceAll(RegExp("[- /]"), "_");
 
             return GestureDetector(
-              onTap: onTap,
+              onTap: () {
+                onTap(categoryName.toLowerCase());
+              },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -87,7 +89,9 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
     );
   }
 
-  void onTap() {
-    Get.toNamed(Paths.info);
+  void onTap(String categoryName) {
+    Get.toNamed(Routes.info, arguments: {
+      "categoryName": categoryName,
+    });
   }
 }

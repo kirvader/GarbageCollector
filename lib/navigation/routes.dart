@@ -5,7 +5,7 @@ abstract class Routes {
   static const objects = Paths.objects;
   static const settings = Paths.settings;
   static const map = Paths.map;
-  static const info = Paths.info;
+  static const info = Paths.categories + Paths.info;
   static const nodeAddMap = Paths.nodeAddMap;
   static const nodeAddForm = Paths.nodeAddForm;
 }

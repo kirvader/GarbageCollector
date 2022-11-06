@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/features/buttons/image_load_method_choice_button.dart';
 import 'package:garbage_collector/navigation/routes.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'controller.dart';
@@ -18,6 +19,10 @@ class MainPageView extends GetView<MainPageController> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
     return Scaffold(
       body: SafeArea(
           child: Column(
