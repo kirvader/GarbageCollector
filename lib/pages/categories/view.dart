@@ -50,9 +50,7 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
     return MaterialApp(
       title: title,
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text(title),
-        ),
+        appBar: AppBar(title: const Text('Categories')),
         body: GridView.count(
           crossAxisCount: 3,
           children: List.generate(categories.length, (categoryIndex) {
