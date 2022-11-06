@@ -12,29 +12,34 @@ class BoxWidget extends StatelessWidget {
   final Size cameraSize;
   final void Function(Map<String, dynamic>) navigateToInfo;
 
-  const BoxWidget({super.key, required this.result, required this.cameraSize, required this.navigateToInfo});
+  const BoxWidget(
+      {super.key,
+      required this.result,
+      required this.cameraSize,
+      required this.navigateToInfo});
 
   @override
   Widget build(BuildContext context) {
-
     double input_model_size = Classifier.INPUT_SIZE.toDouble();
     // Color for bounding box
     Color color = Colors.primaries[
-    (result.label.length + result.label.codeUnitAt(0) + result.id) %
-        Colors.primaries.length];
+        (result.label.length + result.label.codeUnitAt(0) + result.id) %
+            Colors.primaries.length];
 
     double getPos(double arg, bool isHor) {
-      if(isHor == (cameraSize.width > cameraSize.height)) {
-        if(isHor) {
+      if (isHor == (cameraSize.width > cameraSize.height)) {
+        if (isHor) {
           return arg * max(cameraSize.width, cameraSize.height);
         } else {
-          return arg * max(cameraSize.width, cameraSize.height) ;
+          return arg * max(cameraSize.width, cameraSize.height);
         }
       } else {
-        if(isHor) {
-          return arg * max(cameraSize.width, cameraSize.height) - (cameraSize.height - cameraSize.width).abs() / 2;
+        if (isHor) {
+          return arg * max(cameraSize.width, cameraSize.height) -
+              (cameraSize.height - cameraSize.width).abs() / 2;
         } else {
-          return arg * max(cameraSize.width, cameraSize.height) - (cameraSize.height - cameraSize.width).abs() / 2;
+          return arg * max(cameraSize.width, cameraSize.height) -
+              (cameraSize.height - cameraSize.width).abs() / 2;
         }
       }
     }
@@ -42,11 +47,21 @@ class BoxWidget extends StatelessWidget {
     return Positioned(
       left: getPos(result.renderLocation.left, true),
       top: getPos(result.renderLocation.top, false),
-      width: result.renderLocation.width * max(cameraSize.width, cameraSize.height) ,
-      height: result.renderLocation.height * max(cameraSize.width, cameraSize.height) ,
+      width: result.renderLocation.width *
+          max(cameraSize.width, cameraSize.height),
+      height: result.renderLocation.height *
+          max(cameraSize.width, cameraSize.height),
       child: GestureDetector(
         onTap: () async {
-          Map<int, String> mapping = {8 : "plastic bottle", 15: 'shoes', 21 : "glass bottle", 7 : "metal tin"};
+          Map<int, String> mapping = {
+            8: "plastic bottle",
+            16: "shoes",
+            21: "glass bottle",
+            7: "metal tin",
+            15: "clothes",
+            18: "furniture",
+            9: "bottle caps (plastic)"
+          };
           var clsId = result.id;
           late String header;
           if (mapping.containsKey(clsId)) {
@@ -60,15 +75,14 @@ class BoxWidget extends StatelessWidget {
           var category = object["category"];
           var tags = object["tags"];
 
-          navigateToInfo({
-            'categoryName': category,
-            'tags': tags,
-            'header': header
-          });
+          navigateToInfo(
+              {'categoryName': category, 'tags': tags, 'header': header});
         },
         child: Container(
-          width: result.renderLocation.width * max(cameraSize.width, cameraSize.height) ,
-          height: result.renderLocation.height * max(cameraSize.width, cameraSize.height) ,
+          width: result.renderLocation.width *
+              max(cameraSize.width, cameraSize.height),
+          height: result.renderLocation.height *
+              max(cameraSize.width, cameraSize.height),
           decoration: BoxDecoration(
               border: Border.all(color: color, width: 3),
               borderRadius: BorderRadius.all(Radius.circular(2))),
