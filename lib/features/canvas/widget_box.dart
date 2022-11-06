@@ -38,8 +38,8 @@ class BoxWidget extends StatelessWidget {
     }
 
     return Positioned(
-      left: getPos(result.renderLocation.left, true),
-      top: getPos(result.renderLocation.top, false),
+      left: result.renderLocation.left  * max(cameraSize.width, cameraSize.height),
+      top: result.renderLocation.top * max(cameraSize.width, cameraSize.height),
       width: result.renderLocation.width * max(cameraSize.width, cameraSize.height) ,
       height: result.renderLocation.height * max(cameraSize.width, cameraSize.height) ,
       child: Container(
