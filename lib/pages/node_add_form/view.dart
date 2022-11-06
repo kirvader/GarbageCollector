@@ -18,7 +18,10 @@ class NodeAddFormPageView extends GetView<NodeAddFormPageController> {
   Widget build(BuildContext context) {
     final coords = Get.arguments as LatLng;
     return Scaffold(
-        appBar: AppBar(title: const Text('Recycle Point Details')),
+        appBar: AppBar(title: const Text('Recycle Point Details'),
+            leading: BackButton(
+                color: Colors.white
+            )),
         body: Column(children: [
           Flexible(
             child: ListView(
@@ -83,6 +86,7 @@ class NodeAddFormPageView extends GetView<NodeAddFormPageController> {
                               gravity: ToastGravity.BOTTOM,    // location
                             timeInSecForIosWeb: 1
                           );
+                          Get.offAllNamed(Paths.main);
                         },
                         child: Text("Submit"))
                   ]),
