@@ -1,3 +1,1 @@
-class CameraPageState {
-
-}
+class CameraPageState {}

@@ -8,6 +8,7 @@ class InfoPageView extends GetView<InfoPageController> {
 
   @override
   Widget build(BuildContext context) {
+    //var str = Get.arguments as String;
     return Container();
     // return GetRouterOutlet.builder(
     //   routerDelegate: Get.rootDelegate,
