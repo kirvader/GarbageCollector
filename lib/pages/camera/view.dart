@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 
 import 'controller.dart';
 
-
 class CameraPageView extends GetView<CameraPageController> {
   const CameraPageView({super.key});
 
@@ -23,25 +22,21 @@ class CameraPageView extends GetView<CameraPageController> {
               return const Text("Loading maybe");
             }
             return Obx(() {
-              Size sz = MediaQuery
-                  .of(context)
-                  .size;
-              return Stack(
-                  children: [
-                  CameraView(resultsCallback: controller.updateInfo,
-                  sizeChangedCallback: controller.updateSize),
-              BoundingBoxesView(boxes: controller.recognitions.value, cameraSize: sz, navigateToInfo: (args) {
-              print(args);
-              Get.to(() => const InfoPageView(), arguments: args);
-              })
-              ,
-              )
-              ,
-              ]
-              );
+              Size sz = MediaQuery.of(context).size;
+              return Stack(children: [
+                CameraView(
+                    resultsCallback: controller.updateInfo,
+                    sizeChangedCallback: controller.updateSize),
+                BoundingBoxesView(
+                    boxes: controller.recognitions.value,
+                    cameraSize: sz,
+                    navigateToInfo: (args) {
+                      print(args);
+                      Get.to(() => const InfoPageView(), arguments: args);
+                    }),
+              ]);
             });
-          }
-      ),
+          }),
     );
   }
 }
