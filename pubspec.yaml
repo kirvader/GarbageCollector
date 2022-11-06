@@ -38,11 +38,14 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.5
   flutter_map: ^3.0.0
+  latlong2: ^0.8.1
+  location: ^4.4.0
+  maps_launcher: ^2.0.1
   camera: ^0.9.4+5
   image: ^3.2.2
   tflite_flutter: ^0.9.0
   tflite_flutter_helper: ^0.3.1
-
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +73,7 @@ flutter:
   assets:
     - assets/labelmap.txt
     - assets/detect.tflite
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
