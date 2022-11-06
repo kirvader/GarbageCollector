@@ -100,12 +100,17 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       Size screenSize = MediaQuery.of(context).size;
       CameraViewSingleton.screenSize = screenSize;
       print(CameraViewSingleton.screenSize);
-      CameraViewSingleton.ratio = screenSize.width / previewSize.height;
+      CameraViewSingleton.ratio = screenSize.height / previewSize.width;
     });
 
-    return AspectRatio(
-        aspectRatio: cameraController!.value.aspectRatio,
-        child: CameraPreview(cameraController!));
+    final size = MediaQuery.of(context).size;
+    final deviceRatio = size.width / size.height;
+    return Transform.scale(
+      scale: deviceRatio * cameraController!.value.aspectRatio,
+      child: AspectRatio(
+          aspectRatio: deviceRatio,
+          child: CameraPreview(cameraController!)),
+    );
   }
 
   /// Callback to receive each frame [CameraImage] perform inference on it
