@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:garbage_collector/navigation/routes.dart';
 import 'package:get/get.dart';
 
 import 'controller.dart';
@@ -57,29 +58,36 @@ class CategoriesPageView extends GetView<CategoriesPageController> {
                 .toLowerCase()
                 .replaceAll(RegExp("[- /]"), "_");
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                    child: SvgPicture.asset(
-                        'assets/icons/$iconName.svg',
-                        color: colors[categoryIndex],
-                        semanticsLabel: categoryName,
-                        fit: BoxFit.contain
-                    )
-                ),
-                Align(
-                    child: Text(
-                      categoryName,
-                      style: Theme.of(context).textTheme.headline5,
-                      textAlign: TextAlign.center,
-                    )
-                )
-              ],
+            return GestureDetector(
+              onTap: onTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                      child: SvgPicture.asset(
+                          'assets/icons/$iconName.svg',
+                          color: colors[categoryIndex],
+                          semanticsLabel: categoryName,
+                          fit: BoxFit.contain
+                      )
+                  ),
+                  Align(
+                      child: Text(
+                        categoryName,
+                        style: Theme.of(context).textTheme.headline5,
+                        textAlign: TextAlign.center,
+                      )
+                  )
+                ],
+              ),
             );
           }),
         ),
       ),
     );
+  }
+
+  void onTap() {
+    Get.toNamed(Paths.info);
   }
 }
