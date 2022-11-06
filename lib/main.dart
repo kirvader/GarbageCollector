@@ -12,7 +12,7 @@ ThemeData getTheme() {
 
 void main() {
   runApp(GetMaterialApp(
-    initialRoute: Routes.map,
+    initialRoute: Routes.nodeAddMap,
     theme: getTheme(),
     getPages: AppPages.pages,
     enableLog: true,

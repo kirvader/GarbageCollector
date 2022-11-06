@@ -6,6 +6,7 @@ abstract class Routes {
   static const settings = Paths.settings;
   static const map = Paths.map;
   static const info = Paths.info;
+  static const nodeAddMap = Paths.nodeAddMap;
 }
 
 abstract class Paths {
@@ -16,4 +17,5 @@ abstract class Paths {
   static const objects = '/objects';
   static const settings = '/settings';
   static const map = '/map';
+  static const nodeAddMap = '/nodeAppMap';
 }

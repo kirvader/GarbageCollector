@@ -14,6 +14,8 @@ import 'package:garbage_collector/pages/settings/binding.dart';
 import 'package:garbage_collector/pages/settings/view.dart';
 import 'package:get/get.dart';
 
+import '../pages/node_add_map/binding.dart';
+import '../pages/node_add_map/view.dart';
 import 'routes.dart';
 
 class AppPages {
@@ -30,36 +32,11 @@ class AppPages {
               transition: Transition.noTransition,
               children: [
                 GetPage(
-                    name: Paths.info,
-                    page: () => InfoPageView(),
-                    binding: InfoPageBinding(),
-                    transition: Transition.upToDown,
-                    children: [
-                      GetPage(
-                          name: Paths.map,
-                          page: () => MapPageView(),
-                          binding: MapPageBinding(),
-                          transition: Transition.noTransition)
-                    ])
-              ]),
-          GetPage(
-              name: Paths.objects,
-              page: () => ObjectsPageView(),
-              binding: ObjectsPageBinding(),
-              transition: Transition.noTransition,
-              children: [
-                GetPage(
-                    name: Paths.info,
-                    page: () => InfoPageView(),
-                    binding: InfoPageBinding(),
-                    transition: Transition.upToDown,
-                    children: [
-                      GetPage(
-                          name: Paths.map,
-                          page: () => MapPageView(),
-                          binding: MapPageBinding(),
-                          transition: Transition.noTransition)
-                    ])
+                  name: Paths.info,
+                  page: () => InfoPageView(),
+                  binding: InfoPageBinding(),
+                  transition: Transition.upToDown,
+                )
               ]),
           GetPage(
               name: Paths.categories,
@@ -71,19 +48,17 @@ class AppPages {
                     name: Paths.info,
                     page: () => InfoPageView(),
                     binding: InfoPageBinding(),
-                    transition: Transition.upToDown,
-                    children: [
-                      GetPage(
-                          name: Paths.map,
-                          page: () => MapPageView(),
-                          binding: MapPageBinding(),
-                          transition: Transition.noTransition)
-                    ])
+                    transition: Transition.upToDown)
               ]),
           GetPage(
               name: Paths.map,
               page: () => MapPageView(),
               binding: MapPageBinding(),
+              transition: Transition.noTransition),
+          GetPage(
+              name: Paths.nodeAddMap,
+              page: () => NodeAddMapPageView(),
+              binding: NodeAddMapPageBinding(),
               transition: Transition.noTransition),
           GetPage(
             name: Paths.settings,
