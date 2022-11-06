@@ -13,7 +13,10 @@ class CameraPageView extends GetView<CameraPageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Chose item to scan')),
+      appBar: AppBar(title: const Text('Chose item to scan'),
+          leading: BackButton(
+              color: Colors.white
+          )),
       body: FutureBuilder(
           future: availableCameras(),
           builder: (BuildContext context,

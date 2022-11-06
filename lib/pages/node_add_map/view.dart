@@ -17,7 +17,10 @@ class NodeAddMapPageView extends GetView<NodeAddMapPageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Choose Location')),
+      appBar: AppBar(title: const Text('Choose Location'),
+          leading: BackButton(
+              color: Colors.white
+          )),
       body: Column(
         children: [
           Flexible(

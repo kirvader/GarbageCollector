@@ -17,6 +17,10 @@ class InfoPageView extends GetView<InfoPageController> {
     var category = arguments["categoryName"] as String;
 
     return Scaffold(
+      appBar: AppBar(title: const Text('Info'),
+          leading: BackButton(
+          color: Colors.white
+      )),
           body: FutureBuilder(
         future: fetchDescription(category, context),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
