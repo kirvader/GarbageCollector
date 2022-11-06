@@ -22,14 +22,21 @@ class CameraPageView extends GetView<CameraPageController> {
               return const Text("Loading maybe");
             }
             return Obx(() {
+              Size sz = MediaQuery
+                  .of(context)
+                  .size;
               return Stack(
                   children: [
-                    CameraView(resultsCallback: controller.updateInfo, sizeChangedCallback: controller.updateSize),
-                    BoundingBoxesView(boxes: controller.recognitions.value, cameraSize: controller.cameraSize.value, navigateToInfo: (args) {
-                      print(args);
-                      Get.to(() => const InfoPageView(), arguments: args);
-                    }),
-                  ]
+                  CameraView(resultsCallback: controller.updateInfo,
+                  sizeChangedCallback: controller.updateSize),
+              BoundingBoxesView(boxes: controller.recognitions.value, cameraSize: sz, navigateToInfo: (args) {
+              print(args);
+              Get.to(() => const InfoPageView(), arguments: args);
+              })
+              ,
+              )
+              ,
+              ]
               );
             });
           }
