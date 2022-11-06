@@ -12,8 +12,7 @@ import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 class Classifier {
   static const MAX_AMOUNT_OF_RESULTS = 10;
-  static const THRESHOLD = 0.5;
-  static const clsConfTh = 0.7 ;
+  static const clsConfTh = 0.6;
   /// Instance of Interpreter
   Interpreter? _interpreter;
 
@@ -122,10 +121,10 @@ class Classifier {
       double maxClsConf = confs.reduce(max);
       if (maxClsConf * results[i + 4] < clsConfTh) continue;
       int cls = confs.indexOf(maxClsConf) % clsNum;
-      double centerX = results[i];
-      double centerY = results[i + 1];
-      double width = results[i + 2];
-      double height = results[i + 3];
+      double centerY = results[i];
+      double centerX = 1 - results[i + 1];
+      double height = results[i + 2];
+      double width = results[i + 3];
       double conf = results[i + 4] * maxClsConf;
       double left = (centerX - 0.5 * width);
       double top = (centerY - 0.5 * height);
@@ -162,8 +161,6 @@ class Classifier {
     normalizedTensorBuffer.loadList(l, shape: [INPUT_SIZE, INPUT_SIZE, 3]);
     _interpreter!.run(normalizedTensorBuffer.buffer, output.buffer);
     List<double> results = output.getDoubleList();
-    Float32List inputList = Float32List.fromList(List<double>.from(inputImage.buffer.asUint8List().map((x) => x / 255.0)));
-
 
     var inferenceTimeStart = DateTime.now().millisecondsSinceEpoch;
 
