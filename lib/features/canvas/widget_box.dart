@@ -60,14 +60,18 @@ class BoxWidget extends StatelessWidget {
             7: "metal tin",
             15: "clothes",
             18: "furniture",
-            9: "bottle caps (plastic)"
+            9: "bottle caps (plastic)",
+            4: "paperback book",
+            12: "cigarette butt",
+            1: "flowers",
+            3: "newspaper"
           };
           var clsId = result.id;
           late String header;
           if (mapping.containsKey(clsId)) {
             header = mapping[clsId]!;
           } else {
-            header = "shoes";
+            header = "plastic bottle";
           }
           var objectsDescriptions =
               await loadJSON("assets/objects.json", context);

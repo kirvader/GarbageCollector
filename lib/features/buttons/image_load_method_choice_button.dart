@@ -8,7 +8,7 @@ class ImageLoadMethodChoiceButton extends StatelessWidget {
 
   const ImageLoadMethodChoiceButton(
       {Key? key,
-      this.height = 300,
+      this.height = 200,
       required this.child,
       this.cornerRadius = 15.0,
       required this.onPressed})
