@@ -37,7 +37,7 @@ class AppPages {
                   name: Paths.info,
                   page: () => InfoPageView(),
                   binding: InfoPageBinding(),
-                  transition: Transition.upToDown,
+                  transition: Transition.upToDown,//noTransition,
                 )
               ]),
           GetPage(
@@ -47,7 +47,7 @@ class AppPages {
               transition: Transition.noTransition,
               children: [
                 GetPage(
-                    name: Paths.info,
+                    name: Routes.info,
                     page: () => InfoPageView(),
                     binding: InfoPageBinding(),
                     transition: Transition.upToDown)
