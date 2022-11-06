@@ -1,16 +1,19 @@
+import 'dart:core';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
+import 'package:garbage_collector/features/utils/camera_view_singleton.dart';
 import 'package:garbage_collector/features/utils/recognition_result.dart';
-import 'package:garbage_collector/features/utils/stats.dart';
 import 'package:image/image.dart' as imageLib;
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 class Classifier {
   static const MAX_AMOUNT_OF_RESULTS = 10;
-  static const THRESHOLD = 0.3;
+  static const THRESHOLD = 0.5;
+  static const clsConfTh = 0.7 ;
   /// Instance of Interpreter
   Interpreter? _interpreter;
 
@@ -25,6 +28,7 @@ class Classifier {
 
   /// Types of output tensors
   late List<TfLiteType> _outputTypes;
+  late TensorBuffer output;
 
   Classifier(
   {Interpreter? interpreter,
@@ -46,6 +50,9 @@ class Classifier {
       var outputTensors = _interpreter!.getOutputTensors();
       _outputShapes = [];
       _outputTypes = [];
+      output = TensorBuffer.createFixedSize(
+          _interpreter!.getOutputTensor(0).shape,
+          _interpreter!.getOutputTensor(0).type);
       outputTensors.forEach((tensor) {
         _outputShapes.add(tensor.shape);
         _outputTypes.add(tensor.type);
@@ -84,7 +91,7 @@ class Classifier {
   List<String>? get labels => _labels;
 
   /// Input size of image (height = width = 300)
-  static const int INPUT_SIZE = 300;
+  static const int INPUT_SIZE = 640;
 
   /// [ImageProcessor] used to pre-process the image
   late ImageProcessor imageProcessor;
@@ -104,8 +111,27 @@ class Classifier {
         .add(ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeMethod.BILINEAR))
         .build();
 
-    inputImage = imageProcessor.process(inputImage);
-    return inputImage;
+    var newInputImage = imageProcessor.process(inputImage);
+    return newInputImage;
+  }
+
+  List<Recognition> getResultsFromYOLOOutput(List<double> results, int clsNum) {
+    List<Recognition> result = [];
+    for (var i = 0; i < results.length; i += (5 + clsNum)) {
+      var confs = results.sublist(i + 5, i + 5 + clsNum - 1);
+      double maxClsConf = confs.reduce(max);
+      if (maxClsConf * results[i + 4] < clsConfTh) continue;
+      int cls = confs.indexOf(maxClsConf) % clsNum;
+      double centerX = results[i];
+      double centerY = results[i + 1];
+      double width = results[i + 2];
+      double height = results[i + 3];
+      double conf = results[i + 4] * maxClsConf;
+      double left = (centerX - 0.5 * width);
+      double top = (centerY - 0.5 * height);
+      result.add(Recognition(cls, "cls", conf, Rect.fromLTWH(left, top, width, height)));
+    }
+    return result;
   }
 
   /// Runs object detection on the input image
@@ -119,91 +145,32 @@ class Classifier {
 
     var preProcessStart = DateTime.now().millisecondsSinceEpoch;
 
-    // Create TensorImage from image
-    TensorImage inputImage = TensorImage.fromImage(image);
-
-    // Pre-process TensorImage
-    inputImage = getProcessedImage(inputImage);
 
     var preProcessElapsedTime =
         DateTime.now().millisecondsSinceEpoch - preProcessStart;
 
     // TensorBuffers for output tensors
-    TensorBuffer outputLocations = TensorBufferFloat(_outputShapes[0]);
-    TensorBuffer outputClasses = TensorBufferFloat(_outputShapes[1]);
-    TensorBuffer outputScores = TensorBufferFloat(_outputShapes[2]);
-    TensorBuffer numLocations = TensorBufferFloat(_outputShapes[3]);
-
     // Inputs object for runForMultipleInputs
     // Use [TensorImage.buffer] or [TensorBuffer.buffer] to pass by reference
-    List<Object> inputs = [inputImage.buffer];
+    TensorImage inputImage = TensorImage.fromImage(image);
+    inputImage = getProcessedImage(inputImage);
+    List<double> l = inputImage.tensorBuffer
+        .getDoubleList()
+        .map((e) => e / 255.0)
+        .toList();
+    TensorBuffer normalizedTensorBuffer = TensorBuffer.createDynamic(TfLiteType.float32);
+    normalizedTensorBuffer.loadList(l, shape: [INPUT_SIZE, INPUT_SIZE, 3]);
+    _interpreter!.run(normalizedTensorBuffer.buffer, output.buffer);
+    List<double> results = output.getDoubleList();
+    Float32List inputList = Float32List.fromList(List<double>.from(inputImage.buffer.asUint8List().map((x) => x / 255.0)));
 
-    // Outputs map
-    Map<int, Object> outputs = {
-      0: outputLocations.buffer,
-      1: outputClasses.buffer,
-      2: outputScores.buffer,
-      3: numLocations.buffer,
-    };
 
     var inferenceTimeStart = DateTime.now().millisecondsSinceEpoch;
-
-    // run inference
-    _interpreter!.runForMultipleInputs(inputs, outputs);
 
     var inferenceTimeElapsed =
         DateTime.now().millisecondsSinceEpoch - inferenceTimeStart;
 
-    // Maximum number of results to show
-    int resultsCount = min(MAX_AMOUNT_OF_RESULTS, numLocations.getIntValue(0));
-
-    // Using labelOffset = 1 as ??? at index 0
-    int labelOffset = 1;
-
-    // Using bounding box utils for easy conversion of tensorbuffer to List<Rect>
-    List<Rect> locations = BoundingBoxUtils.convert(
-      tensor: outputLocations,
-      valueIndex: [1, 0, 3, 2],
-      boundingBoxAxis: 2,
-      boundingBoxType: BoundingBoxType.BOUNDARIES,
-      coordinateType: CoordinateType.RATIO,
-      height: INPUT_SIZE,
-      width: INPUT_SIZE,
-    );
-
-    List<Recognition> recognitions = [];
-
-    for (int i = 0; i < resultsCount; i++) {
-      // Prediction score
-      var score = outputScores.getDoubleValue(i);
-
-      // Label string
-      var labelIndex = outputClasses.getIntValue(i) + labelOffset;
-      var label = _labels!.elementAt(labelIndex);
-
-      if (score > THRESHOLD) {
-        // inverse of rect
-        // [locations] corresponds to the image size 300 X 300
-        // inverseTransformRect transforms it our [inputImage]
-        Rect transformedRect = imageProcessor.inverseTransformRect(
-            locations[i], image.height, image.width);
-
-        recognitions.add(
-          Recognition(i, label, score, transformedRect),
-        );
-      }
-    }
-
-    var predictElapsedTime =
-        DateTime.now().millisecondsSinceEpoch - predictStartTime;
-
-    return {
-      "recognitions": recognitions,
-      "stats": Stats(
-          totalPredictTime: predictElapsedTime,
-          inferenceTime: inferenceTimeElapsed,
-          preProcessingTime: preProcessElapsedTime)
-    };
+    return { "recognitions": getResultsFromYOLOOutput(results, 25)};
   }
 
 }

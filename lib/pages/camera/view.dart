@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/features/canvas/bounding_boxes.dart';
 import 'package:garbage_collector/features/canvas/camera_preview_widget.dart';
 import 'package:get/get.dart';
 
@@ -20,10 +21,10 @@ class CameraPageView extends GetView<CameraPageController> {
               return const Text("Loading maybe");
             }
             return Obx(() {
-              return Column(
+              return Stack(
                   children: [
-                    Text(controller.info.value),
-                    CameraView(resultsCallback: controller.updateInfo)
+                    CameraView(resultsCallback: controller.updateInfo, sizeChangedCallback: controller.updateSize),
+                    BoundingBoxesView(boxes: controller.recognitions.value, cameraSize: controller.cameraSize.value,),
                   ]
               );
             });

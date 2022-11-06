@@ -17,10 +17,10 @@ class CameraView extends StatefulWidget {
   final Function(List<Recognition> recognitions) resultsCallback;
 
   /// Callback to inference stats to [HomeView]
-  final Function(Stats stats) statsCallback;
+  final Function(Size newSize) sizeChangedCallback;
 
   /// Constructor
-  const CameraView({super.key, this.resultsCallback = defaultRecognitionsResultsCallback, this.statsCallback = defaultStatsCallback});
+  CameraView({super.key, this.resultsCallback = defaultRecognitionsResultsCallback, required this.sizeChangedCallback});
   @override
   _CameraViewState createState() => _CameraViewState();
 }
@@ -70,7 +70,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
 
     // cameras[0] for rear-camera
     cameraController =
-        CameraController(cameras![0], ResolutionPreset.low, enableAudio: false);
+        CameraController(cameras![0], ResolutionPreset.high, enableAudio: false);
 
     cameraController!.initialize().then((_) {
       // Stream of image passed to [onLatestImageAvailable] callback
@@ -79,16 +79,6 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       /// previewSize is size of each image frame captured by controller
       ///
       /// 352x288 on iOS, 240p (320x240) on Android with ResolutionPreset.low
-      Size previewSize = cameraController!.value.previewSize!;
-
-      /// previewSize is size of raw input image to the model
-      CameraViewSingleton.inputImageSize = previewSize;
-
-      // the display width of image on screen is
-      // same as screenWidth while maintaining the aspectRatio
-      Size screenSize = MediaQuery.of(context).size;
-      CameraViewSingleton.screenSize = screenSize;
-      CameraViewSingleton.ratio = screenSize.width / previewSize.height;
     });
   }
 
@@ -98,6 +88,20 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
     if (cameraController == null) {
       return Container();
     }
+
+    setState(() {
+      Size previewSize = cameraController!.value.previewSize!;
+
+      /// previewSize is size of raw input image to the model
+      CameraViewSingleton.inputImageSize = previewSize;
+
+      // the display width of image on screen is
+      // same as screenWidth while maintaining the aspectRatio
+      Size screenSize = MediaQuery.of(context).size;
+      CameraViewSingleton.screenSize = screenSize;
+      print(CameraViewSingleton.screenSize);
+      CameraViewSingleton.ratio = screenSize.width / previewSize.height;
+    });
 
     return AspectRatio(
         aspectRatio: cameraController!.value.aspectRatio,
@@ -135,9 +139,10 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       // pass results to HomeView
       widget.resultsCallback(inferenceResults["recognitions"]);
 
+      widget.sizeChangedCallback(Size(cameraImage.width.toDouble(), cameraImage.height.toDouble()));
       // pass stats to HomeView
-      widget.statsCallback((inferenceResults["stats"] as Stats)
-        ..totalElapsedTime = uiThreadInferenceElapsedTime);
+      // widget.statsCallback((inferenceResults["stats"] as Stats)
+      //   ..totalElapsedTime = uiThreadInferenceElapsedTime);
 
       // set predicting to false to allow new frames
       setState(() {
