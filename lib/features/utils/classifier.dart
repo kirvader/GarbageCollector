@@ -12,7 +12,7 @@ import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 class Classifier {
   static const MAX_AMOUNT_OF_RESULTS = 10;
-  static const clsConfTh = 0.6;
+  static const clsConfTh = 0.5;
   /// Instance of Interpreter
   Interpreter? _interpreter;
 
